@@ -11,7 +11,7 @@ In this case, the GPT engine is told about a subset of the parameters that are a
 
 For demonstration purposes, the program has a hardcoded GPT prompt, as follows,
 > Please create a new EC2 instance for me.
-I want to use it as a Minecraft Bedrock server for up to 25 concurrent players Please balance performance and cost.
+I want to use it as a Minecraft Bedrock server for up to 25 concurrent players. Please balance performance and cost.
 I'd also like it to have a 1/4 TB of storage.
 After its created, I want to be able to easily get rid of this instance using the AWS console.
 
