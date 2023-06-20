@@ -3,7 +3,7 @@ This project creates AWS infrastructure using natural language interpreted using
 
 Current scope is limited to,
 * Amazon Elastic Compute Cloud (EC2) only
-* A limited range of [T2](https://aws.amazon.com/ec2/instance-types/t2/) instance types.
+* A limited range of [T3](https://aws.amazon.com/ec2/instance-types/t3/) instance types.
 
 It uses the recently released [function calling](https://openai.com/blog/function-calling-and-other-api-updates) capability in the Chat Completions API. For a great description of how this capability works, I recommend this [video](https://youtu.be/0lOSvOoF2to).
 
@@ -11,16 +11,17 @@ In this case, the GPT engine is told about a subset of the parameters that are a
 
 For demonstration purposes, the program has a hardcoded GPT prompt, as follows,
 > Please create a new EC2 instance for me.
-I'd like it to have a 1/4 TB of storage, a single CPU and 2 GBs of RAM.
+I want to use it as a Minecraft Bedrock server for up to 25 concurrent players Please balance performance and cost.
+I'd also like it to have a 1/4 TB of storage.
 After its created, I want to be able to easily get rid of this instance using the AWS console.
 
 This automatically creates an EC2 instance with the following configuration,
 
-| Setting | Value                                                     | Comment                                                              |
-|--|-----------------------------------------------------------|----------------------------------------------------------------------|
-| InstanceType | [t2.small](https://aws.amazon.com/ec2/instance-types/t2/) | A great choice, as this instance type has 1 vCPU and 2.0 GiB of RAM. |
-| VolumeSize | 250 | Good, because we asked for 1/4 TB of storage. |
-| DisableApiTermination | False | Great, because we said we wanted it to be easy to get rid of. |
+| Setting | Value                                                      | Comment                                                                                                                                                                      |
+|--|------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| InstanceType | [t3.medium](https://aws.amazon.com/ec2/instance-types/t3/) | This instance type has 2 vCPUs and 4 GB of RAM. Advice online is that 4 GB is the minimum for 25 users on a Bedrock server - so this instance type seems like a good choice. |
+| VolumeSize | 250                                                        | Good, because we asked for 1/4 TB of storage.                                                                                                                                |
+| DisableApiTermination | False                                                      | Good, because we said we wanted it to be easy to get rid of.                                                                                                                 |
 
 ## Installation
 ```commandline

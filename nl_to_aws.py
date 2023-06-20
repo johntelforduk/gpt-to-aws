@@ -9,7 +9,8 @@ load_dotenv(verbose=True)           # Set operating system environment variables
 openai.api_key = getenv('OPEN_AI_KEY')
 
 content = """Please create a new EC2 instance for me.
-I'd like it to have a 1/4 TB of storage, a single CPU and 2 GBs of RAM.
+I want to use it as a Minecraft Bedrock server for up to 25 concurrent players. Please balance performance and cost.
+I'd also like it to have a 1/4 TB of storage.
 After its created, I want to be able to easily get rid of this instance using the AWS console."""
 
 print(f"content={content}")
@@ -26,9 +27,8 @@ completion = openai.ChatCompletion.create(
                 "properties": {
                     "InstanceType": {
                         "type": "string",
-                        "description": """The EC2 instance type.
-                        Use this page for information about instance types that are available, https://aws.amazon.com/ec2/instance-types/t2/""",
-                        "enum": ["t2.nano", "t2.micro", "t2.small", "t2.medium", "t2.large"]},
+                        "description": """The EC2 instance type. There is information about the options here, https://aws.amazon.com/ec2/instance-types/t3/""",
+                        "enum": ["t3.nano", "t3.micro", "t3.small", "t3.medium", "t3.large", "t3.xlarge", "t3.2xlarge"]},
                     "VolumeSize": {"type": "number",
                                    "description": "The size of the volume, in GiBs."},
                     "DisableApiTermination": {"type": "boolean",
