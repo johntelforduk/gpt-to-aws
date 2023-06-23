@@ -8,38 +8,37 @@ load_dotenv(verbose=True)           # Set operating system environment variables
 
 openai.api_key = getenv('OPEN_AI_KEY')
 
-content = """Please create a new EC2 instance for me.
+prompt = """Please create a new EC2 instance for me.
 I want to use it as a Minecraft Bedrock server for up to 25 concurrent players. Please balance performance and cost.
 I'd also like it to have a 1/4 TB of storage.
 After its created, I want to be able to easily get rid of this instance using the AWS console."""
 
-print(f"content={content}")
+print(f"prompt={prompt}")
+
+run_instances_function = {
+    "name": "run_instances",
+    "description": "Use the AWS API to create a new EC2 instance.",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "InstanceType": {
+                "type": "string",
+                "description": "The EC2 instance type. There is information about the options here, https://aws.amazon.com/ec2/instance-types/t3/",
+                "enum": ["t3.nano", "t3.micro", "t3.small", "t3.medium", "t3.large", "t3.xlarge", "t3.2xlarge"]},
+            "VolumeSize": {"type": "number",
+                           "description": "The size of the volume, in GiBs."},
+            "DisableApiTermination": {"type": "boolean",
+                                      "description": "If you set this parameter to true, you can’t terminate the instance using the Amazon EC2 console, CLI, or API; otherwise, you can."}
+                      },
+        "required": ["InstanceType", "VolumeSize", "DisableApiTermination"]
+                  }
+              }
 
 completion = openai.ChatCompletion.create(
     model=getenv('OPEN_AI_MODEL'),
-    messages=[{"role": "user", "content": content}],
-    functions=[
-        {
-            "name": "run_instances",
-            "description": "Use the AWS API to create a new EC2 instance.",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "InstanceType": {
-                        "type": "string",
-                        "description": """The EC2 instance type. There is information about the options here, https://aws.amazon.com/ec2/instance-types/t3/""",
-                        "enum": ["t3.nano", "t3.micro", "t3.small", "t3.medium", "t3.large", "t3.xlarge", "t3.2xlarge"]},
-                    "VolumeSize": {"type": "number",
-                                   "description": "The size of the volume, in GiBs."},
-                    "DisableApiTermination": {"type": "boolean",
-                                              "description": "If you set this parameter to true, you can’t terminate the instance using the Amazon EC2 console, CLI, or API; otherwise, you can."}
-                              },
-                "required": ["InstanceType", "VolumeSize", "DisableApiTermination"]
-            }
-        }
-    ],
-    function_call={"name": "run_instances"}
-)
+    messages=[{"role": "user", "content": prompt}],
+    functions=[run_instances_function],
+    function_call={"name": "run_instances"})
 
 # print(completion)
 
@@ -51,24 +50,26 @@ function_dict = json.loads(function_json)
 
 print(f"\nGPT responded with, function_name={function_name}, function_dict={function_dict}")
 
-ec2_client = boto3.client('ec2', region_name=getenv('AWS_REGION_NAME'))
+if getenv('SKIP_AWS') == 'False':
 
-response = ec2_client.run_instances(
-    ImageId='ami-00b1c9efd33fda707',        # Amazon Linux 2 AMI ID.
-    InstanceType=function_dict['InstanceType'],
-    MinCount=1,
-    MaxCount=1,
-    BlockDeviceMappings=[
-        {
-            'DeviceName': '/dev/xvda',
-            'Ebs': {
-                'VolumeSize': function_dict['VolumeSize'],
-                'VolumeType': 'gp2'         # General Purpose SSD (gp2) volume.
+    ec2_client = boto3.client('ec2', region_name=getenv('AWS_REGION_NAME'))
+
+    response = ec2_client.run_instances(
+        ImageId='ami-00b1c9efd33fda707',        # Amazon Linux 2 AMI ID.
+        InstanceType=function_dict['InstanceType'],
+        MinCount=1,
+        MaxCount=1,
+        BlockDeviceMappings=[
+            {
+                'DeviceName': '/dev/xvda',
+                'Ebs': {
+                    'VolumeSize': function_dict['VolumeSize'],
+                    'VolumeType': 'gp2'         # General Purpose SSD (gp2) volume.
+                }
             }
-        }
-    ],
-    DisableApiTermination=function_dict['DisableApiTermination']
-)
+        ],
+        DisableApiTermination=function_dict['DisableApiTermination']
+    )
 
-instance_id = response['Instances'][0]['InstanceId']
-print(f"\nEC2 instance created, instance_id={instance_id}")
+    instance_id = response['Instances'][0]['InstanceId']
+    print(f"\nEC2 instance created, instance_id={instance_id}")

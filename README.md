@@ -40,10 +40,13 @@ OPEN_AI_KEY=<your OpenAI API key>
 OPEN_AI_MODEL="gpt-3.5-turbo-0613"
 
 # AWS
+SKIP_AWS=True
 AWS_ACCESS_KEY_ID=<your access key>
 AWS_SECRET_ACCESS_KEY=<your secret access key>
 AWS_REGION_NAME=<your preferred region>
 ```
+Set `SKIP_AWS` to `False` if you want the program to actually create EC2 instances for you. Leave it as `True` if you just want to test the program (see what kind of EC2 it would have launched).
+
 Tben to run the program do,
 ```commandline
 python nl_to_aws.py
