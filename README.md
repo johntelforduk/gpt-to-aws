@@ -22,6 +22,7 @@ This automatically creates an EC2 instance with the following configuration,
 | InstanceType | [t3.medium](https://aws.amazon.com/ec2/instance-types/t3/) | This instance type has 2 vCPUs and 4 GB of RAM. Advice online is that 4 GB is the minimum for 25 users on a Bedrock server - so this instance type seems like a good choice. |
 | VolumeSize | 250                                                        | Good, because we asked for 1/4 TB of storage.                                                                                                                                |
 | DisableApiTermination | False                                                      | Good, because we said we wanted it to be easy to get rid of.                                                                                                                 |
+One of the interesting things is that if the prompt is changed to say thet there will only be 5 players, then it usually chooses a t3.micro instance type (which has less capacity).
 
 ## Installation
 ```commandline
@@ -47,11 +48,11 @@ AWS_REGION_NAME=<your preferred region>
 ```
 Set `SKIP_AWS` to `False` if you want the program to actually create EC2 instances for you. Leave it as `True` if you just want to test the program (see what kind of EC2 it would have launched).
 
-Tben to run the program do,
+Then to run the program do,
 ```commandline
 python nl_to_aws.py
 ```
 ## Costs
 The program is currently configured to use the **gpt-3.5-turbo** model, which (at time of writing) has a [cost](https://openai.com/pricing) of about $0.002 per 1,000 tokens. In testing, typical conversations use about 250 tokens, which is a negligible cost. Note, new OpenAI accounts usually come with some token credits.
 
-It also starts AWS EC2 instances which will incur ongoing costs. You should ensure that you use the AWS console to terminate any un-needed instances.
+If you set `SKIP_AWS=False` in the `.env` file it also starts AWS EC2 instances. These will incur ongoing costs. You should ensure that you use the AWS console to terminate any un-needed instances.
