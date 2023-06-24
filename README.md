@@ -23,7 +23,7 @@ This automatically creates an EC2 instance with the following configuration,
 | VolumeSize | 250                                                        | Good, because we asked for 1/4 TB of storage.                                                                                                                                |
 | DisableApiTermination | False                                                      | Good, because we said we wanted it to be easy to get rid of.                                                                                                                 |
 
-One of the interesting things is that if the prompt is changed to say thet there will only be 5 players, then it usually chooses a t3.micro instance type (which has less capacity).
+If the prompt is changed to say thet there will only be 5 players, then it usually chooses a t3.micro instance type (which has less capacity).
 
 ## Installation
 ```commandline
