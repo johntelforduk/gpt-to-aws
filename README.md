@@ -27,9 +27,7 @@ If the prompt is changed to say that there will only be 5 players, then it usual
 
 ## Installation
 ```commandline
-pip install python-dotenv
-pip install boto3
-pip install openai
+pip install -r requirements.txt
 ```
 The program requires both of these,
 * [OpenAI API key](https://platform.openai.com/account/api-keys)
