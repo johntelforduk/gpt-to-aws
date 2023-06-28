@@ -39,7 +39,8 @@ completion = openai.ChatCompletion.create(
     temperature=float(getenv('TEMPERATURE')),
     messages=[{"role": "user", "content": prompt}],
     functions=[run_instances_function],
-    function_call={"name": "run_instances"})
+    function_call={"name": "run_instances"},
+    temperature=0.0)
 
 # print(completion)
 
