@@ -40,6 +40,7 @@ Before running the program, create a `.env` file containing the following key/va
 # OpenAI
 OPEN_AI_KEY=<your OpenAI API key>
 OPEN_AI_MODEL="gpt-3.5-turbo-0613"
+TEMPERATURE="0.2"
 
 # AWS
 SKIP_AWS=True
@@ -47,6 +48,8 @@ AWS_ACCESS_KEY_ID=<your access key>
 AWS_SECRET_ACCESS_KEY=<your secret access key>
 AWS_REGION_NAME=<your preferred region>
 ```
+The low `TEMPERATURE` setting makes the responses from GPT more focused and deterministic. 
+
 Set `SKIP_AWS` to `False` if you want the program to actually create EC2 instances for you. Leave it as `True` if you just want to test the program (see what kind of EC2 it would have launched).
 
 Then to run the program do,
