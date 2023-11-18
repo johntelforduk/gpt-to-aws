@@ -35,7 +35,7 @@ run_instances_function = {
               }
 
 completion = openai.ChatCompletion.create(
-    model=getenv('OPEN_AI_MODEL'),
+    model="gpt-3.5-turbo-0613",
     temperature=float(getenv('TEMPERATURE')),
     messages=[{"role": "user", "content": prompt}],
     functions=[run_instances_function],

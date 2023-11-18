@@ -1,0 +1,92 @@
+Creating an AWS CloudFormation template from a high-level architecture diagram involves detailing AWS resource declarations in YAML or JSON format. The diagram you have provided includes a VPC, a Lambda Function, an API Gateway, and a DynamoDB table.
+
+Please remember that an actual CloudFormation template would need much more detailed configuration parameters, resource properties, and possible additional resources such as IAM roles for permissions, depending on the specific use case. Since I don't have the option to code directly, I'll provide you with a pseudo CloudFormation YAML template to illustrate what components you would start with.
+
+Below is a simplified template example in YAML that corresponds to the architecture diagram you've provided:
+
+```yaml
+AWSTemplateFormatVersion: '2010-09-09'
+Resources:
+  MyVPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      # Specify VPC configuration such as CIDR Block, enableDnsSupport, etc.
+
+  MyLambdaFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      Handler: index.handler
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Code:
+        # Define the source code location
+      Runtime: nodejs12.x
+      VpcConfig:
+        SecurityGroupIds: [!Ref LambdaSecurityGroup]
+        SubnetIds: [!Ref SubnetA, !Ref SubnetB]
+        # Configure the Subnet and security groups as needed
+
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      # Define the IAM Role and its policies that allows Lambda to manage resources
+
+  LambdaSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      # Define security group rules and VPC association
+
+  MyDynamoDBTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: "id"
+          AttributeType: "S"
+      KeySchema:
+        - AttributeName: "id"
+          KeyType: "HASH"
+      BillingMode: PAY_PER_REQUEST
+      TableName: "Customers"
+
+  MyApiGateway:
+    Type: AWS::ApiGateway::RestApi
+    Properties:
+      Name: "CustomerDetailsAPI"
+      # Additional API Gateway configuration
+
+  MyLambdaApiGatewayIntegration:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      RestApiId: !Ref MyApiGateway
+      ResourceId: !GetAtt MyApiGateway.RootResourceId
+      HttpMethod: ANY
+      Integration:
+        Type: AWS_PROXY
+        IntegrationHttpMethod: POST
+        Uri: !Sub
+          - "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${MyLambdaFunction.Arn}/invocations"
+          - {}
+        IntegrationResponses:
+          - StatusCode: 200
+
+Outputs:
+  ApiGatewayUrl:
+    Description: "URL of the API Gateway"
+    Value: !Sub
+      - "https://${MyApiGateway}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
+      - {}
+
+```
+
+This is a basic template and doesn't represent a fully-fledged AWS infrastructure deployment. Here's a checklist you'll need to consider for a complete setup:
+
+- Define the VPC CIDR block and other VPC properties.
+- Define Lambda Function details such as execution role, source code (S3 bucket or inline), environment variables, etc.
+- Specify the IAM role and policy for Lambda execution.
+- Specify Lambda security group details, and any specific rules needed.
+- Define DynamoDB table properties such as attribute definitions, key schema, indexes, and any required throughputs or billing mode.
+- Define the API Gateway resources, methods, stages, and integration with Lambda.
+- Insert Lambda permission to allow the API Gateway to invoke the Lambda function.
+- Optionally define outputs for endpoints, ARNs, etc.
+- Consider any necessary security measures such as encryption, logging, and monitoring.
+
+Keep in mind, creating a stacked architecture in an actual AWS account will require a lot of security and design considerations, which are beyond the scope of this simplified example.
